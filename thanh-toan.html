@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thanh toán - Cỏ Mềm</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .checkout-hero {
+      background: linear-gradient(165deg, #0e3d1a 0%, #1a5e2a 40%, #2d5e2d 100%);
+      padding: 140px 24px 60px;
+      text-align: center;
+    }
+    .checkout-hero h1 { font-size: 42px; color: white; font-weight: 700; }
+    .checkout-hero h1 em { color: var(--secondary); font-style: italic; }
+    .checkout-hero p { color: rgba(255,255,255,0.6); margin-top: 8px; }
+
+    .checkout-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    .checkout-empty {
+      text-align: center;
+      padding: 80px 20px;
+      min-height: 500px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .checkout-empty .empty-icon {
+      width: 140px; height: 140px;
+      background: var(--primary-soft);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 24px;
+    }
+    .checkout-empty .empty-icon i { font-size: 64px; color: var(--primary); }
+    .checkout-empty h2 { font-size: 28px; margin-bottom: 8px; }
+    .checkout-empty p { color: var(--text-muted); margin-bottom: 32px; font-size: 16px; }
+
+    .checkout-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: start;
+    }
+    .checkout-layout.success {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 400px;
+    }
+
+    .checkout-section {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 32px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid rgba(0,0,0,0.03);
+    }
+    .checkout-section h2 {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .checkout-section h2 i { color: var(--primary); }
+
+    .form-group { margin-bottom: 20px; }
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+    .form-group label .required { color: #e53935; }
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1.5px solid var(--gray-border);
+      border-radius: var(--radius-sm);
+      font-size: 15px;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: var(--transition);
+    }
+    .form-group input:focus,
+    .form-group textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+    .form-group textarea { resize: vertical; min-height: 80px; }
+    .form-row { display: flex; gap: 16px; }
+    .form-row .form-group { flex: 1; }
+
+    .order-summary-items {
+      margin-bottom: 20px;
+    }
+    .order-summary-item {
+      display: flex;
+      gap: 16px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--gray);
+    }
+    .order-summary-item:last-child { border-bottom: none; }
+    .order-summary-item img {
+      width: 60px; height: 60px;
+      border-radius: 8px;
+      object-fit: cover;
+      flex-shrink: 0;
+      background: var(--gray);
+    }
+    .order-summary-item .info { flex: 1; min-width: 0; }
+    .order-summary-item .info .name { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+    .order-summary-item .info .meta { font-size: 13px; color: var(--text-muted); }
+    .order-summary-item .info .qty-price {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-top: 4px;
+    }
+    .order-summary-item .info .qty-price .qty { font-size: 13px; color: var(--text-muted); }
+    .order-summary-item .info .qty-price .price { font-weight: 700; color: var(--primary); }
+
+    .order-totals {
+      border-top: 2px solid var(--gray);
+      padding-top: 16px;
+    }
+    .order-totals .row {
+      display: flex; justify-content: space-between;
+      padding: 8px 0;
+      font-size: 15px;
+      color: var(--text-light);
+    }
+    .order-totals .row.total {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--primary);
+      font-family: 'Playfair Display', serif;
+      border-top: 2px solid var(--gray);
+      margin-top: 12px;
+      padding-top: 16px;
+    }
+    .order-totals .row .shipping { color: var(--primary); font-weight: 600; }
+
+    .payment-method {
+      background: var(--primary-soft);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .payment-method i { font-size: 24px; color: var(--primary); }
+    .payment-method .info { font-size: 14px; color: var(--text); }
+    .payment-method .info strong { display: block; margin-bottom: 2px; }
+
+    .checkout-submit {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      box-shadow: 0 4px 20px rgba(26,94,42,0.25);
+    }
+    .checkout-submit:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 30px rgba(26,94,42,0.35);
+    }
+
+    .checkout-back {
+      display: block;
+      text-align: center;
+      margin-top: 16px;
+      font-size: 14px;
+      color: var(--text-muted);
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+    .checkout-back:hover { color: var(--primary); }
+
+    .success-screen {
+      text-align: center;
+      padding: 60px 20px;
+      max-width: 500px;
+      width: 100%;
+    }
+    .success-screen .success-icon {
+      width: 120px; height: 120px;
+      background: var(--primary-soft);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 24px;
+    }
+    .success-screen .success-icon i { font-size: 56px; color: var(--primary); }
+    .success-screen h2 { font-size: 28px; margin-bottom: 8px; color: var(--text); }
+    .success-screen p { color: var(--text-muted); margin-bottom: 8px; }
+    .success-screen .order-id { font-size: 14px; color: var(--primary); font-weight: 600; margin-bottom: 32px; }
+
+    @media (max-width: 800px) {
+      .checkout-layout { grid-template-columns: 1fr; }
+      .form-row { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="header scrolled">
+  <div class="header-inner">
+    <a href="index.html" class="logo"><i class="fas fa-leaf"></i> Cỏ Mềm</a>
+    <nav class="nav">
+      <a href="index.html">Trang chủ</a>
+      <a href="danh-muc.html">Sản phẩm</a>
+      <a href="gio-hang.html">Giỏ hàng</a>
+      <a href="admin/index.html">Admin</a>
+    </nav>
+    <div class="header-actions">
+      <a href="gio-hang.html"><i class="fas fa-shopping-bag"></i><span class="cart-count">0</span></a>
+      <button class="mobile-menu-btn"><i class="fas fa-bars"></i></button>
+    </div>
+  </div>
+</header>
+
+<div class="checkout-hero">
+  <h1>Thanh Toán <em>Đơn Hàng</em></h1>
+  <p>Điền thông tin giao hàng để chúng tôi gửi sản phẩm đến bạn</p>
+</div>
+
+<div class="checkout-container">
+  <div id="checkout-empty" class="checkout-empty" style="display:none;">
+    <div class="empty-icon"><i class="fas fa-shopping-bag"></i></div>
+    <h2>Giỏ hàng trống</h2>
+    <p>Bạn cần có sản phẩm trong giỏ hàng để thanh toán.</p>
+    <a href="danh-muc.html" class="btn-primary">Mua sắm ngay</a>
+  </div>
+
+  <div class="checkout-layout" id="checkout-layout">
+    <div class="checkout-section">
+      <h2><i class="fas fa-file-invoice"></i> Thông tin giao hàng</h2>
+      <form id="order-form" onsubmit="submitOrder(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Họ và tên <span class="required">*</span></label>
+            <input type="text" id="order-name" required placeholder="Nguyễn Văn A">
+          </div>
+          <div class="form-group">
+            <label>Số điện thoại <span class="required">*</span></label>
+            <input type="tel" id="order-phone" required placeholder="0987654321">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="order-email" placeholder="email@example.com">
+        </div>
+        <div class="form-group">
+          <label>Địa chỉ giao hàng <span class="required">*</span></label>
+          <input type="text" id="order-address" required placeholder="Số nhà, đường, phường/xã, quận/huyện, tỉnh/thành phố">
+        </div>
+        <div class="form-group">
+          <label>Ghi chú</label>
+          <textarea id="order-note" placeholder="Ghi chú cho đơn hàng (nếu có)"></textarea>
+        </div>
+        <button type="submit" class="checkout-submit">
+          <i class="fas fa-check"></i> Đặt hàng
+        </button>
+        <a href="gio-hang.html" class="checkout-back">Quay lại giỏ hàng</a>
+      </form>
+    </div>
+
+    <div class="checkout-section">
+      <h2><i class="fas fa-receipt"></i> Đơn hàng của bạn</h2>
+      <div class="order-summary-items" id="checkout-items"></div>
+      <div class="order-totals">
+        <div class="row"><span>Tạm tính</span><span id="checkout-subtotal">0₫</span></div>
+        <div class="row"><span>Phí vận chuyển</span><span class="shipping">Miễn phí</span></div>
+        <div class="row total"><span>Tổng cộng</span><span id="checkout-total">0₫</span></div>
+      </div>
+      <div class="payment-method">
+        <i class="fas fa-truck"></i>
+        <div class="info">
+          <strong>Thanh toán khi nhận hàng (COD)</strong>
+          Bạn sẽ thanh toán bằng tiền mặt khi nhận được hàng.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <h3><i class="fas fa-leaf"></i> Cỏ Mềm</h3>
+      <p>Mỹ phẩm thiên nhiên thuần chay, an toàn cho làn da.</p>
+      <div class="footer-social">
+        <a href="#"><i class="fab fa-facebook-f"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-youtube"></i></a>
+        <a href="#"><i class="fab fa-tiktok"></i></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Liên kết</h4>
+      <a href="index.html">Trang chủ</a>
+      <a href="danh-muc.html">Sản phẩm</a>
+      <a href="gio-hang.html">Giỏ hàng</a>
+    </div>
+    <div class="footer-col">
+      <h4>Hỗ trợ</h4>
+      <a href="#">Chính sách đổi trả</a>
+      <a href="#">Chính sách bảo mật</a>
+    </div>
+    <div class="footer-col">
+      <h4>Liên hệ</h4>
+      <a href="#"><i class="fas fa-map-marker-alt"></i> 123 Nguyễn Huệ, Q.1</a>
+      <a href="#"><i class="fas fa-phone"></i> 1900 1234 56</a>
+      <a href="#"><i class="fas fa-envelope"></i> info@comem.vn</a>
+    </div>
+  </div>
+  <div class="footer-bottom">&copy; 2026 Cỏ Mềm Cosmetics.</div>
+</footer>
+
+<div class="toast"></div>
+
+<script src="data/products.js"></script>
+<script src="js/main.js"></script>
+<script>
+  function submitOrder(e) {
+    e.preventDefault();
+    if (cart.length === 0) { showToast('Giỏ hàng trống!'); return; }
+    const name = document.getElementById('order-name').value.trim();
+    const phone = document.getElementById('order-phone').value.trim();
+    const address = document.getElementById('order-address').value.trim();
+    if (!name || !phone || !address) { showToast('Vui lòng điền đầy đủ thông tin bắt buộc!'); return; }
+    const order = {
+      id: Date.now(), date: new Date().toLocaleDateString('vi-VN'),
+      customer: name, phone, email: document.getElementById('order-email').value.trim(),
+      address, note: document.getElementById('order-note').value.trim(),
+      items: [...cart], total: getCartTotal(), status: 'pending'
+    };
+    const orders = JSON.parse(localStorage.getItem('comem-orders')) || [];
+    orders.unshift(order);
+    localStorage.setItem('comem-orders', JSON.stringify(orders));
+    cart = []; saveCart();
+    const el = document.getElementById('checkout-layout');
+    el.classList.add('success');
+    el.innerHTML = `
+      <div class="success-screen">
+        <div class="success-icon"><i class="fas fa-check-circle"></i></div>
+        <h2>Đặt hàng thành công!</h2>
+        <p>Cảm ơn bạn đã đặt hàng tại Cỏ Mềm.</p>
+        <p>Chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất.</p>
+        <div class="order-id"><i class="fas fa-hashtag"></i> Mã đơn hàng: #${order.id}</div>
+        <a href="index.html" class="btn-primary">Về trang chủ</a>
+      </div>`;
+  }
+
+  function renderCheckoutSummary() {
+    document.getElementById('checkout-items').innerHTML = cart.map(item => {
+      const product = products.find(p => p.id === item.id);
+      const img = product ? product.image : item.image;
+      const name = product ? product.name : item.name;
+      const volume = product ? product.volume : '';
+      return `
+        <div class="order-summary-item">
+          <img src="${img}" alt="${name}">
+          <div class="info">
+            <div class="name">${name}</div>
+            <div class="meta">${volume}</div>
+            <div class="qty-price">
+              <span class="qty">Số lượng: <strong>${item.qty}</strong></span>
+              <span class="price">${formatPrice(item.price * item.qty)}</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+    const total = getCartTotal();
+    document.getElementById('checkout-subtotal').textContent = formatPrice(total);
+    document.getElementById('checkout-total').textContent = formatPrice(total);
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    if (cart.length === 0) {
+      document.getElementById('checkout-empty').style.display = 'flex';
+      document.getElementById('checkout-layout').style.display = 'none';
+    } else {
+      renderCheckoutSummary();
+    }
+  });
+</script>
+</body>
+</html>

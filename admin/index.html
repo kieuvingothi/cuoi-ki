@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản trị - Cỏ Mềm</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .admin-hero {
+      background: linear-gradient(165deg, #0a1628 0%, #1a2744 40%, #0e3d1a 100%);
+      padding: 140px 24px 60px;
+      text-align: center;
+    }
+    .admin-hero h1 { font-size: 42px; color: white; font-weight: 700; }
+    .admin-hero h1 em { color: var(--secondary); font-style: italic; }
+    .admin-hero p { color: rgba(255,255,255,0.5); margin-top: 8px; }
+
+    .admin-wrap { max-width: 1200px; margin: 0 auto; padding: 40px 24px 80px; }
+
+    .login-screen {
+      max-width: 400px;
+      margin: 120px auto;
+      padding: 48px 32px;
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-xl);
+      text-align: center;
+    }
+    .login-screen .login-icon {
+      width: 80px; height: 80px;
+      background: var(--primary-soft);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 20px;
+    }
+    .login-screen .login-icon i { font-size: 40px; color: var(--primary); }
+    .login-screen h2 { margin-bottom: 24px; color: var(--text); font-size: 24px; }
+    .login-screen input {
+      width: 100%;
+      padding: 12px 16px;
+      margin-bottom: 12px;
+      border: 1.5px solid var(--gray-border);
+      border-radius: var(--radius-sm);
+      font-size: 15px;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: var(--transition);
+    }
+    .login-screen input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-glow); }
+    .login-error { color: #e53935; font-size: 14px; display: none; margin-bottom: 12px; }
+
+    .admin-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 32px; flex-wrap: wrap; gap: 16px;
+    }
+    .admin-header h2 { font-size: 28px; display: flex; align-items: center; gap: 12px; }
+    .admin-header h2 i { color: var(--primary); }
+
+    .stats-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px; margin-bottom: 40px;
+    }
+    .stat-card {
+      background: var(--white);
+      padding: 24px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid rgba(0,0,0,0.03);
+    }
+    .stat-card i { font-size: 28px; color: var(--primary); margin-bottom: 8px; }
+    .stat-card h3 { font-size: 28px; font-weight: 700; }
+    .stat-card p { color: var(--text-muted); font-size: 14px; }
+
+    .admin-tabs {
+      display: flex; gap: 4px;
+      border-bottom: 2px solid var(--gray);
+      margin-bottom: 24px;
+    }
+    .admin-tabs button {
+      padding: 12px 24px;
+      background: none; border: none;
+      border-bottom: 3px solid transparent;
+      font-size: 15px; font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: var(--transition);
+      margin-bottom: -2px;
+      font-family: 'Inter', sans-serif;
+    }
+    .admin-tabs button.active { color: var(--primary); border-bottom-color: var(--primary); }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    .admin-table-wrap { overflow-x: auto; }
+
+    .toolbar {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 16px; flex-wrap: wrap; gap: 12px;
+    }
+    .toolbar button {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 50px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .toolbar button:hover { background: var(--primary-dark); transform: translateY(-2px); }
+
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--white);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+    .admin-table th {
+      background: var(--primary-soft);
+      color: var(--primary-dark);
+      font-weight: 600;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 14px 16px;
+      text-align: left;
+    }
+    .admin-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--gray);
+      font-size: 14px;
+      vertical-align: middle;
+    }
+    .admin-table tr:hover td { background: #fafff5; }
+    .admin-table td img {
+      width: 50px; height: 50px;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+    .admin-table .actions {
+      display: flex; gap: 4px;
+    }
+    .admin-table .actions button {
+      padding: 6px 14px;
+      border: none;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .btn-edit { background: #e3f2fd; color: #1565c0; }
+    .btn-edit:hover { background: #1565c0; color: white; }
+    .btn-delete { background: #fce4ec; color: #c62828; }
+    .btn-delete:hover { background: #c62828; color: white; }
+    .status-select {
+      padding: 6px 10px;
+      border: 1px solid var(--gray-border);
+      border-radius: 6px;
+      font-size: 12px;
+      font-family: 'Inter', sans-serif;
+      background: var(--white);
+      cursor: pointer;
+    }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 40px 32px;
+      max-width: 520px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-xl);
+    }
+    .modal h2 { margin-bottom: 24px; font-size: 24px; }
+    .modal .form-group { margin-bottom: 16px; }
+    .modal label { display: block; font-weight: 600; font-size: 14px; margin-bottom: 6px; color: var(--text); }
+    .modal input, .modal select, .modal textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid var(--gray-border);
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: var(--transition);
+    }
+    .modal input:focus, .modal select:focus, .modal textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+    .modal textarea { resize: vertical; min-height: 80px; }
+    .modal .form-row { display: flex; gap: 12px; }
+    .modal .form-row .form-group { flex: 1; }
+    .modal .modal-actions {
+      display: flex; gap: 12px; margin-top: 24px;
+    }
+    .modal .modal-actions button { flex: 1; }
+    .modal .modal-actions .btn-cancel {
+      background: var(--gray); color: var(--text);
+      border: none; border-radius: 50px; padding: 12px;
+      font-weight: 600; cursor: pointer; font-size: 15px;
+    }
+    .modal .modal-actions .btn-cancel:hover { background: #ddd; }
+
+    @media (max-width: 768px) {
+      .admin-table { font-size: 13px; }
+      .admin-table th, .admin-table td { padding: 10px 12px; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="header scrolled">
+  <div class="header-inner">
+    <a href="../index.html" class="logo"><i class="fas fa-leaf"></i> Cỏ Mềm</a>
+    <nav class="nav">
+      <a href="../index.html">Trang chủ</a>
+      <a href="../danh-muc.html">Sản phẩm</a>
+      <a href="../gio-hang.html">Giỏ hàng</a>
+      <a href="index.html" class="active">Admin</a>
+    </nav>
+    <div class="header-actions">
+      <a href="javascript:void(0)" id="logout-btn" style="display:none;" title="Đăng xuất"><i class="fas fa-sign-out-alt"></i></a>
+      <button class="mobile-menu-btn"><i class="fas fa-bars"></i></button>
+    </div>
+  </div>
+</header>
+
+<div id="login" class="login-screen">
+  <div class="login-icon"><i class="fas fa-leaf"></i></div>
+  <h2>Đăng nhập Admin</h2>
+  <div class="login-error" id="login-error">Sai thông tin đăng nhập!</div>
+  <input type="text" id="username" placeholder="Tên đăng nhập">
+  <input type="password" id="password" placeholder="Mật khẩu" onkeypress="if(event.key==='Enter')doLogin()">
+  <button class="btn-primary" style="width:100%" onclick="doLogin()">Đăng nhập</button>
+  <p style="margin-top:16px;font-size:13px;color:var(--text-muted);">TK: admin / MK: admin123</p>
+</div>
+
+<div id="admin" style="display:none;">
+  <div class="admin-hero">
+    <h1>Quản Trị <em>Cỏ Mềm</em></h1>
+    <p>Quản lý sản phẩm và đơn hàng</p>
+  </div>
+
+  <div class="admin-wrap">
+    <div class="stats-grid" id="stats"></div>
+
+    <div class="admin-tabs">
+      <button class="active" onclick="switchTab('products',this)"><i class="fas fa-box"></i> Sản phẩm</button>
+      <button onclick="switchTab('orders',this)"><i class="fas fa-truck"></i> Đơn hàng</button>
+    </div>
+
+    <div id="tab-products" class="tab-content active">
+      <div class="toolbar">
+        <span style="color:var(--text-muted);font-size:14px;" id="product-count"></span>
+        <button onclick="openModal()"><i class="fas fa-plus"></i> Thêm sản phẩm</button>
+      </div>
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead><tr><th>Ảnh</th><th>Tên</th><th>Danh mục</th><th>Giá</th><th>Dung tích</th><th>Thao tác</th></tr></thead>
+          <tbody id="product-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="tab-orders" class="tab-content">
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead><tr><th>Mã ĐH</th><th>Khách hàng</th><th>SDT</th><th>Địa chỉ</th><th>Sản phẩm</th><th>Tổng</th><th>Trạng thái</th></tr></thead>
+          <tbody id="order-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h2 id="modal-title">Thêm sản phẩm</h2>
+    <div class="form-group">
+      <label>Tên sản phẩm</label>
+      <input type="text" id="f-name" placeholder="VD: Serum Vitamin C">
+    </div>
+    <div class="form-group">
+      <label for="f-cat">Danh mục</label>
+      <select id="f-cat" onchange="updateAdminSubs()">
+        <option value="">Chọn danh mục</option>
+        ${categories.map(c => `<option value="${c.id}">${c.name}</option>`).join('')}
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="f-sub">Danh mục con</label>
+      <select id="f-sub">
+        <option value="">Không có</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Giá (₫)</label>
+        <input type="number" id="f-price" placeholder="250000">
+      </div>
+      <div class="form-group">
+        <label>Giá cũ (₫)</label>
+        <input type="number" id="f-oldprice" placeholder="320000">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Hình ảnh</label>
+      <input type="text" id="f-image" value="https://placehold.co/400x400/e8f5e9/2e7d32?text=SP">
+    </div>
+    <div class="form-group">
+      <label>Mô tả</label>
+      <textarea id="f-desc" placeholder="Mô tả sản phẩm"></textarea>
+    </div>
+    <div class="form-group">
+      <label>Dung tích</label>
+      <input type="text" id="f-volume" placeholder="50ml">
+    </div>
+    <div class="modal-actions">
+      <button class="btn-primary" style="flex:1" onclick="saveProduct()">Lưu</button>
+      <button class="btn-cancel" onclick="closeModal()">Hủy</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast"></div>
+
+<script src="../data/products.js"></script>
+<script src="../js/main.js"></script>
+<script>
+  let editingId = null, localProducts = [...products];
+
+  function doLogin() {
+    const u = document.getElementById('username').value, p = document.getElementById('password').value;
+    if (u === 'admin' && p === 'admin123') {
+      localStorage.setItem('comem-admin','true');
+      toggleAdmin(true);
+    } else {
+      document.getElementById('login-error').style.display='block';
+    }
+  }
+
+  function logout() {
+    localStorage.removeItem('comem-admin');
+    toggleAdmin(false);
+  }
+
+  function toggleAdmin(show) {
+    document.getElementById('login').style.display = show ? 'none' : 'block';
+    document.getElementById('admin').style.display = show ? 'block' : 'none';
+    document.getElementById('logout-btn').style.display = show ? 'inline-flex' : 'none';
+    if (show) { renderStats(); renderProducts(); renderOrders(); }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    if (localStorage.getItem('comem-admin') === 'true') toggleAdmin(true);
+    document.getElementById('logout-btn').addEventListener('click', logout);
+  });
+
+  function switchTab(id, btn) {
+    document.querySelectorAll('.admin-tabs button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-'+id).classList.add('active');
+  }
+
+  function renderStats() {
+    const orders = JSON.parse(localStorage.getItem('comem-orders')) || [];
+    const revenue = orders.filter(o => o.status !== 'cancelled').reduce((s,o) => s + o.total, 0);
+    const pending = orders.filter(o => o.status === 'pending').length;
+    document.getElementById('stats').innerHTML = `
+      <div class="stat-card"><i class="fas fa-box"></i><h3>${localProducts.length}</h3><p>Sản phẩm</p></div>
+      <div class="stat-card"><i class="fas fa-shopping-cart"></i><h3>${orders.length}</h3><p>Đơn hàng</p></div>
+      <div class="stat-card"><i class="fas fa-clock"></i><h3>${pending}</h3><p>Chờ xử lý</p></div>
+      <div class="stat-card"><i class="fas fa-money-bill-wave"></i><h3>${formatPrice(revenue)}</h3><p>Doanh thu</p></div>
+    `;
+  }
+
+  function renderProducts() {
+    document.getElementById('product-count').textContent = `${localProducts.length} sản phẩm`;
+    document.getElementById('product-body').innerHTML = localProducts.map(p => `
+      <tr>
+        <td><img src="../${p.image}" alt="${p.name}"></td>
+        <td><strong>${p.name}</strong></td>
+        <td>${p.categoryName}</td>
+        <td>${formatPrice(p.price)}</td>
+        <td>${p.volume}</td>
+        <td><div class="actions">
+          <button class="btn-edit" onclick="editProduct(${p.id})">Sửa</button>
+          <button class="btn-delete" onclick="deleteProduct(${p.id})">Xóa</button>
+        </div></td>
+      </tr>
+    `).join('');
+  }
+
+  function updateAdminSubs() {
+    const cat = document.getElementById('f-cat').value;
+    const sub = document.getElementById('f-sub');
+    const subs = subcategories.filter(s => s.parent === cat);
+    sub.innerHTML = `<option value="">Không có</option>${subs.map(s => `<option value="${s.id}">${s.name}</option>`).join('')}`;
+  }
+
+  function openModal(product) {
+    document.getElementById('modal').classList.add('active');
+    if (product) {
+      editingId = product.id;
+      document.getElementById('modal-title').textContent = 'Sửa sản phẩm';
+      document.getElementById('f-name').value = product.name;
+      document.getElementById('f-cat').value = product.category;
+      updateAdminSubs();
+      document.getElementById('f-sub').value = product.subcategory || '';
+      document.getElementById('f-price').value = product.price;
+      document.getElementById('f-oldprice').value = product.oldPrice || '';
+      document.getElementById('f-image').value = product.image;
+      document.getElementById('f-desc').value = product.description;
+      document.getElementById('f-volume').value = product.volume;
+    } else {
+      editingId = null;
+      document.getElementById('modal-title').textContent = 'Thêm sản phẩm';
+      ['f-name','f-price','f-oldprice','f-desc','f-volume'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('f-cat').value = categories.length ? categories[0].id : '';
+      updateAdminSubs();
+      document.getElementById('f-image').value = 'https://placehold.co/400x400/e8f5e9/2e7d32?text=SP';
+    }
+  }
+
+  function closeModal() { document.getElementById('modal').classList.remove('active'); }
+
+  function saveProduct() {
+    const name = document.getElementById('f-name').value.trim();
+    const cat = document.getElementById('f-cat').value;
+    const sub = document.getElementById('f-sub').value;
+    const price = parseInt(document.getElementById('f-price').value);
+    const oldPrice = parseInt(document.getElementById('f-oldprice').value) || 0;
+    const image = document.getElementById('f-image').value.trim();
+    const desc = document.getElementById('f-desc').value.trim();
+    const volume = document.getElementById('f-volume').value.trim();
+    if (!name || !price || !desc || !volume) { showToast('Vui lòng nhập đầy đủ thông tin!'); return; }
+    const catObj = categories.find(c => c.id === cat);
+    const badge = oldPrice > price ? 'Giảm ' + Math.round((1 - price/oldPrice)*100) + '%' : '';
+    if (editingId) {
+      const idx = localProducts.findIndex(p => p.id === editingId);
+      if (idx !== -1) Object.assign(localProducts[idx], { name, category: cat, categoryName: catObj.name, subcategory: sub, price, oldPrice, image, description: desc, volume, badge });
+      showToast('Đã cập nhật sản phẩm!');
+    } else {
+      localProducts.push({ id: Math.max(...localProducts.map(p => p.id), 0) + 1, name, category: cat, categoryName: catObj.name, subcategory: sub, price, oldPrice, image, badge, volume, rating: 0, sold: 0, description: desc, ingredients: '', usage: '' });
+      showToast('Đã thêm sản phẩm!');
+    }
+    closeModal();
+    renderProducts();
+    renderStats();
+  }
+
+  function editProduct(id) { const p = localProducts.find(x => x.id === id); if (p) openModal(p); }
+  function deleteProduct(id) { if (!confirm('Xóa sản phẩm này?')) return; localProducts = localProducts.filter(x => x.id !== id); renderProducts(); renderStats(); showToast('Đã xóa!'); }
+
+  const STATUS_MAP = { pending:'Chờ xử lý', processing:'Đang xử lý', shipped:'Đang giao', delivered:'Đã giao', cancelled:'Đã hủy' };
+
+  function renderOrders() {
+    const orders = JSON.parse(localStorage.getItem('comem-orders')) || [];
+    const tbody = document.getElementById('order-body');
+    if (!orders.length) {
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text-muted)">Chưa có đơn hàng</td></tr>';
+      return;
+    }
+    tbody.innerHTML = orders.map(o => `
+      <tr>
+        <td><strong>#${o.id}</strong></td>
+        <td>${o.customer}</td>
+        <td>${o.phone}</td>
+        <td style="max-width:200px;font-size:13px">${o.address}</td>
+        <td style="max-width:200px;font-size:13px">${o.items.map(i => i.name+' x'+i.qty).join(', ')}</td>
+        <td><strong>${formatPrice(o.total)}</strong></td>
+        <td><select class="status-select" onchange="updateStatus(${o.id},this.value)">
+          ${Object.entries(STATUS_MAP).map(([k,v]) => `<option value="${k}" ${o.status===k?'selected':''}>${v}</option>`).join('')}
+        </select></td>
+      </tr>
+    `).join('');
+  }
+
+  function updateStatus(id, status) {
+    const orders = JSON.parse(localStorage.getItem('comem-orders')) || [];
+    const idx = orders.findIndex(o => o.id === id);
+    if (idx !== -1) { orders[idx].status = status; localStorage.setItem('comem-orders', JSON.stringify(orders)); renderStats(); showToast('Đã cập nhật!'); }
+  }
+</script>
+</body>
+</html>

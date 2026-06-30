@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chi tiết sản phẩm - Cỏ Mềm</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .detail-hero {
+      background: linear-gradient(165deg, #0e3d1a 0%, #1a5e2a 40%, #2d5e2d 100%);
+      padding: 140px 24px 60px;
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+    }
+    .detail-hero::before {
+      content: '';
+      position: absolute;
+      top: -30%; right: -10%;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .detail-hero-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+    .detail-hero h1 {
+      font-size: 42px;
+      color: white;
+      font-weight: 700;
+    }
+    .detail-hero h1 em { color: var(--secondary); font-style: italic; }
+    .detail-hero p {
+      color: rgba(255,255,255,0.6);
+      font-size: 16px;
+      margin-top: 8px;
+    }
+
+    .detail-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      background: var(--white);
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: var(--shadow-lg);
+      margin-bottom: 24px;
+    }
+
+    .detail-gallery {
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      background: var(--gray);
+    }
+
+    .detail-gallery img {
+      width: 100%;
+      aspect-ratio: 1;
+      object-fit: cover;
+    }
+
+    .detail-gallery-badge {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      background: var(--secondary);
+      color: white;
+      padding: 6px 16px;
+      border-radius: 50px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .detail-product-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .detail-category-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .detail-product-name {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 16px;
+      line-height: 1.3;
+    }
+
+    .detail-rating-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .detail-stars {
+      color: var(--secondary);
+      font-size: 16px;
+      letter-spacing: 2px;
+    }
+
+    .detail-rating-text {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    .detail-price-block {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .detail-current-price {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .detail-old-price {
+      font-size: 18px;
+      color: var(--text-muted);
+      text-decoration: line-through;
+    }
+
+    .detail-discount {
+      background: #fff3e0;
+      color: #e65100;
+      padding: 4px 12px;
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .detail-volume-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      background: var(--primary-soft);
+      border-radius: 50px;
+      color: var(--primary);
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 28px;
+      width: fit-content;
+    }
+
+    .detail-divider {
+      height: 1px;
+      background: var(--gray-border);
+      margin: 28px 0;
+    }
+
+    .detail-description-title,
+    .detail-ingredients-title,
+    .detail-usage-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .detail-description-title::before,
+    .detail-ingredients-title::before,
+    .detail-usage-title::before {
+      content: '';
+      width: 4px;
+      height: 16px;
+      background: var(--primary);
+      border-radius: 2px;
+    }
+
+    .detail-description-text,
+    .detail-ingredients-text,
+    .detail-usage-text {
+      font-size: 14px;
+      color: var(--text-light);
+      line-height: 1.9;
+      margin-bottom: 20px;
+    }
+
+    .detail-actions-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 32px;
+      flex-wrap: wrap;
+    }
+
+    .detail-qty {
+      display: flex;
+      align-items: center;
+      border: 1.5px solid var(--gray-border);
+      border-radius: 50px;
+      overflow: hidden;
+      background: var(--white);
+    }
+
+    .detail-qty button {
+      width: 44px;
+      height: 44px;
+      border: none;
+      background: transparent;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--text);
+      transition: var(--transition);
+    }
+
+    .detail-qty button:hover {
+      background: var(--primary-soft);
+      color: var(--primary);
+    }
+
+    .detail-qty input {
+      width: 52px;
+      height: 44px;
+      border: none;
+      text-align: center;
+      font-size: 16px;
+      font-weight: 600;
+      outline: none;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .detail-add-btn {
+      flex: 1;
+      padding: 12px 28px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 4px 16px rgba(26,94,42,0.2);
+    }
+
+    .detail-add-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(26,94,42,0.3);
+    }
+
+    .detail-back-btn {
+      padding: 12px 24px;
+      background: var(--gray);
+      color: var(--text);
+      border: none;
+      border-radius: 50px;
+      font-size: 15px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .detail-back-btn:hover {
+      background: var(--gray-border);
+    }
+
+    .detail-related {
+      margin-top: 20px;
+    }
+
+    .detail-related-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    @media (max-width: 768px) {
+      .detail-grid {
+        grid-template-columns: 1fr;
+        padding: 24px;
+        gap: 32px;
+      }
+      .detail-hero { padding: 120px 20px 50px; }
+      .detail-hero h1 { font-size: 30px; }
+      .detail-product-name { font-size: 24px; }
+      .detail-current-price { font-size: 26px; }
+      .detail-actions-row { flex-direction: column; }
+      .detail-add-btn { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="header scrolled">
+  <div class="header-inner">
+    <a href="index.html" class="logo"><i class="fas fa-leaf"></i> Cỏ Mềm</a>
+    <nav class="nav">
+      <a href="index.html">Trang chủ</a>
+      <a href="danh-muc.html">Sản phẩm</a>
+      <a href="gio-hang.html">Giỏ hàng</a>
+      <a href="admin/index.html">Admin</a>
+    </nav>
+    <div class="header-actions">
+      <a href="gio-hang.html"><i class="fas fa-shopping-bag"></i><span class="cart-count">0</span></a>
+      <button class="mobile-menu-btn"><i class="fas fa-bars"></i></button>
+    </div>
+  </div>
+</header>
+
+<div class="detail-hero">
+  <div class="detail-hero-inner">
+    <h1>Chi Tiết <em>Sản Phẩm</em></h1>
+    <p>Khám phá thông tin chi tiết về sản phẩm Cỏ Mềm</p>
+  </div>
+</div>
+
+<div class="detail-container">
+  <div class="detail-grid" id="detail-grid">
+    <!-- Sản phẩm render tại đây -->
+  </div>
+
+  <div class="detail-related">
+    <h2 class="detail-related-title">Sản phẩm <em style="color:var(--primary);">liên quan</em></h2>
+    <div class="products-grid" id="related-products"></div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <h3><i class="fas fa-leaf"></i> Cỏ Mềm</h3>
+      <p>Mỹ phẩm thiên nhiên thuần chay, an toàn cho làn da.</p>
+      <div class="footer-social">
+        <a href="#"><i class="fab fa-facebook-f"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-youtube"></i></a>
+        <a href="#"><i class="fab fa-tiktok"></i></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Liên kết</h4>
+      <a href="index.html">Trang chủ</a>
+      <a href="danh-muc.html">Sản phẩm</a>
+      <a href="gio-hang.html">Giỏ hàng</a>
+    </div>
+    <div class="footer-col">
+      <h4>Hỗ trợ</h4>
+      <a href="#">Chính sách đổi trả</a>
+      <a href="#">Chính sách bảo mật</a>
+    </div>
+    <div class="footer-col">
+      <h4>Liên hệ</h4>
+      <a href="#"><i class="fas fa-map-marker-alt"></i> 123 Nguyễn Huệ, Q.1</a>
+      <a href="#"><i class="fas fa-phone"></i> 1900 1234 56</a>
+      <a href="#"><i class="fas fa-envelope"></i> info@comem.vn</a>
+    </div>
+  </div>
+  <div class="footer-bottom">&copy; 2026 Cỏ Mềm Cosmetics.</div>
+</footer>
+
+<div class="toast"></div>
+
+<script src="data/products.js"></script>
+<script src="js/main.js"></script>
+<script>
+  let detailQty = 1;
+  let currentProductId = null;
+
+  function renderDetail() {
+    const grid = document.getElementById('detail-grid');
+    const relatedGrid = document.getElementById('related-products');
+    const urlParams = new URLSearchParams(window.location.search);
+    const productId = parseInt(urlParams.get('id'));
+    const product = products.find(p => p.id === productId);
+
+    if (!product) {
+      grid.innerHTML = `
+        <div style="text-align:center;padding:80px 20px;grid-column:1/-1;">
+          <i class="fas fa-exclamation-circle" style="font-size:64px;color:var(--gray-border);margin-bottom:16px;"></i>
+          <h2 style="font-size:24px;margin-bottom:8px;">Sản phẩm không tồn tại</h2>
+          <p style="color:var(--text-muted);margin-bottom:24px;">Sản phẩm bạn tìm không có hoặc đã bị xóa.</p>
+          <a href="danh-muc.html" class="btn-primary">Quay lại cửa hàng</a>
+        </div>`;
+      return;
+    }
+
+    currentProductId = productId;
+    const stars = '★'.repeat(Math.floor(product.rating)) + (product.rating % 1 >= 0.5 ? '½' : '');
+    const oldPriceHtml = product.oldPrice ? `<span class="detail-old-price">${formatPrice(product.oldPrice)}</span>` : '';
+    const badgeClass = product.badge === 'Bán chạy' ? 'hot' : product.badge === 'Mới' ? 'new' : '';
+    const discount = product.oldPrice ? Math.round((1 - product.price / product.oldPrice) * 100) : 0;
+
+    grid.innerHTML = `
+      <div class="detail-gallery">
+        <img src="${product.image}" alt="${product.name}">
+        ${product.badge ? `<span class="detail-gallery-badge">${product.badge}</span>` : ''}
+      </div>
+      
+      <div class="detail-product-info">
+        <div class="detail-category-label">${product.categoryName}</div>
+        <h1 class="detail-product-name">${product.name}</h1>
+        
+        <div class="detail-rating-row">
+          <span class="detail-stars">${stars}</span>
+          <span class="detail-rating-text">${product.rating} / 5 (${product.sold} đã bán)</span>
+        </div>
+
+        <div class="detail-price-block">
+          <span class="detail-current-price">${formatPrice(product.price)}</span>
+          ${oldPriceHtml}
+          ${discount > 0 ? `<span class="detail-discount">-${discount}%</span>` : ''}
+        </div>
+
+        <div class="detail-volume-badge">
+          <i class="fas fa-box"></i> Dung tích: ${product.volume}
+        </div>
+
+        <div class="detail-divider"></div>
+
+        <div class="detail-description-title">Mô tả sản phẩm</div>
+        <p class="detail-description-text">${product.description}</p>
+
+        <div class="detail-ingredients-title">Thành phần chính</div>
+        <p class="detail-ingredients-text">${product.ingredients}</p>
+
+        <div class="detail-usage-title">Hướng dẫn sử dụng</div>
+        <p class="detail-usage-text">${product.usage}</p>
+
+        <div class="detail-actions-row">
+          <div class="detail-qty">
+            <button onclick="changeQty(-1)">−</button>
+            <input type="text" id="qty-input" value="1" readonly>
+            <button onclick="changeQty(1)">+</button>
+          </div>
+          <button class="detail-add-btn" onclick="addToCartFromDetail(${product.id})">
+            <i class="fas fa-shopping-cart"></i> Thêm vào giỏ hàng
+          </button>
+          <button class="detail-back-btn" onclick="history.back()">Quay lại</button>
+        </div>
+      </div>
+    `;
+
+    // Render related products (same category, exclude current)
+    const related = products.filter(p => p.category === product.category && p.id !== productId).slice(0, 4);
+    relatedGrid.innerHTML = related.map(p => {
+      const rStars = '★'.repeat(Math.floor(p.rating)) + (p.rating % 1 >= 0.5 ? '½' : '');
+      const rBadgeClass = p.badge === 'Bán chạy' ? 'hot' : p.badge === 'Mới' ? 'new' : '';
+      const rOldPrice = p.oldPrice ? `<span class="old-price">${formatPrice(p.oldPrice)}</span>` : '';
+      return `
+        <div class="product-card">
+          <a href="chi-tiet.html?id=${p.id}">
+            <div class="product-img-wrap">
+              <img src="${p.image}" alt="${p.name}">
+              ${p.badge ? `<span class="product-badge ${rBadgeClass}">${p.badge}</span>` : ''}
+            </div>
+          </a>
+          <div class="product-quick-actions">
+            <a href="chi-tiet.html?id=${p.id}"><button><i class="fas fa-eye"></i></button></a>
+          </div>
+          <div class="product-info">
+            <div class="product-category">${p.categoryName}</div>
+            <a href="chi-tiet.html?id=${p.id}"><div class="product-name">${p.name}</div></a>
+            <div class="product-price">
+              <span class="current-price">${formatPrice(p.price)}</span>
+              ${rOldPrice}
+            </div>
+            <div class="product-rating">
+              <span class="stars">${rStars}</span>
+              <span>${p.rating} (${p.sold})</span>
+            </div>
+            <button class="add-to-cart-btn" onclick="addToCart(${p.id}); this.innerHTML='<i class=\\'fas fa-check\\'></i> Đã thêm'; this.classList.add('added'); setTimeout(()=>{ this.innerHTML='<i class=\\'fas fa-shopping-cart\\'></i> Thêm vào giỏ'; this.classList.remove('added'); }, 2000);">
+              <i class="fas fa-shopping-cart"></i> Thêm vào giỏ
+            </button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function changeQty(delta) {
+    detailQty = Math.max(1, detailQty + delta);
+    const input = document.getElementById('qty-input');
+    if (input) input.value = detailQty;
+  }
+
+  function addToCartFromDetail(productId) {
+    addToCart(productId, detailQty);
+  }
+
+  renderDetail();
+</script>
+</body>
+</html>
